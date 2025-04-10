@@ -2,8 +2,8 @@ import { useState } from "react";
 
 export default function Login() {
   const [data, setData] = useState({email:'', password:''});
-
-  const emailIsInvalid = data.email !== '' && !data.email.includes('@');  
+  const [didEdit, setDidEdit] = useState({email: false, password: false});
+  const emailIsInvalid = didEdit.email && !data.email.includes('@');  
   
   function handleSubmit(e) {
     e.preventDefault();
@@ -12,6 +12,11 @@ export default function Login() {
 
   function handleInputChange(identifier, value) {
     setData(prev => ({...prev, [identifier]: value}));
+    setDidEdit(prev => ({ ...prev, [identifier]: false }))
+  }
+
+  function handleInputBlur(identifier) {
+    setDidEdit((prev)=>({...prev, [identifier]: true}));
   }
   
   return (
@@ -21,13 +26,13 @@ export default function Login() {
       <div className="control-row">
         <div className="control no-margin">
           <label htmlFor="email">Email</label>
-          <input id="email" type="email" name="email" value={data.email} onChange={(e)=>handleInputChange('email', e.target.value)} />
+          <input id="email" type="email" name="email" value={data.email} onBlur={()=>handleInputBlur('email')} onChange={(e)=>handleInputChange('email', e.target.value)} />
           <div className="control-error">{emailIsInvalid && <p>Please enter a valid email</p>}</div>
         </div>
 
         <div className="control no-margin">
           <label htmlFor="password">Password</label>
-          <input id="password" type="password" name="password" value={data.password} onChange={(e)=> handleInputChange('password', e.target.value)} />
+          <input id="password" type="password" name="password" value={data.password} onBlur={() => handleInputBlur('password')} onChange={(e) => handleInputChange('password', e.target.value)} />
         </div>
       </div>
 
