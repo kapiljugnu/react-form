@@ -1,25 +1,11 @@
-import { useState } from "react";
 
 export default function Signup() {
-  const [passwordNotMatch, setPasswordNotMatch] = useState(false);
   
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    const fd = new FormData(event.target);
-    const acquisition = fd.getAll('acquisition');
-    const data = Object.fromEntries(fd.entries());
-    data.acquisitipn = acquisition;
-
-    if(data.password !== data['confirm-password']) {
-      setPasswordNotMatch(true);
-      return;
-    }
-    
-    console.log(data);
+  function signupAction(formData) {
+    console.log(formData.get('email'));
   }
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={signupAction}>
       <h2>Welcome on board!</h2>
       <p>We just need a little bit of data from you to get you started 🚀</p>
 
@@ -43,7 +29,6 @@ export default function Signup() {
             required
             minLength={6}
           />
-        <div className="control-error">{passwordNotMatch && <p>Password not match</p>}</div>
         </div>
       </div>
 
