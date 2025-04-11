@@ -1,23 +1,72 @@
+import { useActionState } from "react";
+import { hasMinLength, isEmail, isEqualsToOtherValue, isNotEmpty } from "../util/validation";
 
+
+const initalState = { errors: null}
 export default function Signup() {
   
-  function signupAction(formData) {
-    console.log(formData.get('email'));
+  function signupAction(prevFormState ,formData) {
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirm-password');
+    const firstName = formData.get('first-name');
+    const lastName = formData.get('last-name');
+    const role = formData.get('role');
+    const terms = formData.get('terms');
+    const acquisitionChannel = formData.getAll('acquisition');
+
+    let errors = [];
+
+    if(!isEmail(email)) {
+      errors.push('Invalid email address');
+    }
+
+    if(!isNotEmpty(password) || hasMinLength(password)) {
+      errors.push('You must provide password with atleast six character');
+    }
+
+    if(isEqualsToOtherValue(password, confirmPassword)) {
+      errors.push("Passwords don't match")
+    }
+
+    if(!isNotEmpty(firstName) || !isNotEmpty(lastName)) {
+      errors.push('Please provide both your first and last name.')
+    }
+
+    if(!isNotEmpty(role)) {
+      errors.push('Please select a role');
+    }
+
+    if(!terms) {
+      errors.push('You must agree to the terms and conditions.')
+    }
+
+    if(acquisitionChannel.length === 0) {
+      errors.push('Please select at least one acquisition channel');
+    }
+
+    if (errors.length > 0) {
+      return { errors }
+    }
+
+    return { errros: null }
   }
+
+  const [formState, formAction] = useActionState(signupAction, initalState);
   return (
-    <form action={signupAction}>
+    <form action={formAction}>
       <h2>Welcome on board!</h2>
       <p>We just need a little bit of data from you to get you started 🚀</p>
 
       <div className="control">
         <label htmlFor="email">Email</label>
-        <input id="email" type="email" name="email" required />
+        <input id="email" type="email" name="email" />
       </div>
 
       <div className="control-row">
         <div className="control">
           <label htmlFor="password">Password</label>
-          <input id="password" type="password" name="password" required minLength={6} />
+          <input id="password" type="password" name="password"  />
         </div>
 
         <div className="control">
@@ -26,8 +75,6 @@ export default function Signup() {
             id="confirm-password"
             type="password"
             name="confirm-password"
-            required
-            minLength={6}
           />
         </div>
       </div>
@@ -37,12 +84,12 @@ export default function Signup() {
       <div className="control-row">
         <div className="control">
           <label htmlFor="first-name">First Name</label>
-          <input type="text" id="first-name" name="first-name" required />
+          <input type="text" id="first-name" name="first-name" />
         </div>
 
         <div className="control">
           <label htmlFor="last-name">Last Name</label>
-          <input type="text" id="last-name" name="last-name" required />
+          <input type="text" id="last-name" name="last-name" />
         </div>
       </div>
 
@@ -87,10 +134,14 @@ export default function Signup() {
 
       <div className="control">
         <label htmlFor="terms-and-conditions">
-          <input type="checkbox" id="terms-and-conditions" name="terms" required />I
+          <input type="checkbox" id="terms-and-conditions" name="terms" />I
           agree to the terms and conditions
         </label>
       </div>
+
+     {formState.errors && (<ul className="error">{
+        formState.errors.map((e) => <li key={e}>{e}</li>)
+     }</ul>)}
 
       <p className="form-actions">
         <button type="reset" className="button button-flat">
