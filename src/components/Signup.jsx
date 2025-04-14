@@ -2,69 +2,70 @@ import { useActionState } from "react";
 import { hasMinLength, isEmail, isEqualsToOtherValue, isNotEmpty } from "../util/validation";
 
 
-const initalState = { errors: null}
-export default function Signup() {
-  
-  function signupAction(prevFormState ,formData) {
-    const email = formData.get('email');
-    const password = formData.get('password');
-    const confirmPassword = formData.get('confirm-password');
-    const firstName = formData.get('first-name');
-    const lastName = formData.get('last-name');
-    const role = formData.get('role');
-    const terms = formData.get('terms');
-    const acquisitionChannel = formData.getAll('acquisition');
+const initalState = { errors: null };
 
-    let errors = [];
+function signupAction(prevFormState, formData) {
+  const email = formData.get('email');
+  const password = formData.get('password');
+  const confirmPassword = formData.get('confirm-password');
+  const firstName = formData.get('first-name');
+  const lastName = formData.get('last-name');
+  const role = formData.get('role');
+  const terms = formData.get('terms');
+  const acquisitionChannel = formData.getAll('acquisition');
 
-    if(!isEmail(email)) {
-      errors.push('Invalid email address');
-    }
+  let errors = [];
 
-    if(!isNotEmpty(password) || hasMinLength(password)) {
-      errors.push('You must provide password with atleast six character');
-    }
+  if (!isEmail(email)) {
+    errors.push('Invalid email address');
+  }
 
-    if(isEqualsToOtherValue(password, confirmPassword)) {
-      errors.push("Passwords don't match")
-    }
+  if (!isNotEmpty(password) || hasMinLength(password)) {
+    errors.push('You must provide password with atleast six character');
+  }
 
-    if(!isNotEmpty(firstName) || !isNotEmpty(lastName)) {
-      errors.push('Please provide both your first and last name.')
-    }
+  if (isEqualsToOtherValue(password, confirmPassword)) {
+    errors.push("Passwords don't match")
+  }
 
-    if(!isNotEmpty(role)) {
-      errors.push('Please select a role');
-    }
+  if (!isNotEmpty(firstName) || !isNotEmpty(lastName)) {
+    errors.push('Please provide both your first and last name.')
+  }
 
-    if(!terms) {
-      errors.push('You must agree to the terms and conditions.')
-    }
+  if (!isNotEmpty(role)) {
+    errors.push('Please select a role');
+  }
 
-    if(acquisitionChannel.length === 0) {
-      errors.push('Please select at least one acquisition channel');
-    }
+  if (!terms) {
+    errors.push('You must agree to the terms and conditions.')
+  }
 
-    console.log(terms)
+  if (acquisitionChannel.length === 0) {
+    errors.push('Please select at least one acquisition channel');
+  }
 
-    if (errors.length > 0) {
-      return {
-        errors,
-        enteredValues: {
-          email,
-          password,
-          confirmPassword,
-          role,
-          terms,
-          firstName,
-          lastName, acquisitionChannel
-        }
+  console.log(terms)
+
+  if (errors.length > 0) {
+    return {
+      errors,
+      enteredValues: {
+        email,
+        password,
+        confirmPassword,
+        role,
+        terms,
+        firstName,
+        lastName, acquisitionChannel
       }
     }
-
-    return { errros: null }
   }
-  
+
+  return { errros: null }
+}
+
+export default function Signup() {
+
   const [formState, formAction] = useActionState(signupAction, initalState);
   return (
     <form action={formAction}>
