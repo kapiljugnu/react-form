@@ -1,5 +1,6 @@
 import { useActionState, use } from "react";
 import { OpinionsContext } from "./opinions-context";
+import SubmitAction from "./SubmitAction";
 
 const formInitailValues = { errors: null };
 
@@ -57,9 +58,7 @@ export function NewOpinion() {
             {formState.errors.map((e) => <li key={e}>{e}</li>)}
           </ul>
         }
-        <p className="actions">
-          <button type="submit">Submit</button>
-        </p>
+        <SubmitAction />
       </form>
     </div>
   );
